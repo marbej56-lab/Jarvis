@@ -1,90 +1,79 @@
 /* =========================
-   JARVIS CLOCK
+   JARVIS — script.js
+   Added DOMContentLoaded wrapper and null-checks for safe execution
 ========================= */
 
-function updateClock() {
-
+document.addEventListener('DOMContentLoaded', () => {
+  /* =========================
+     JARVIS CLOCK
+  ========================= */
+  function updateClock() {
     const now = new Date();
 
-    const hours = String(now.getHours()).padStart(2, "0");
-    const minutes = String(now.getMinutes()).padStart(2, "0");
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
 
-    document.getElementById("time").textContent =
-        `${hours}:${minutes}`;
+    const timeEl = document.getElementById('time');
+    if (timeEl) timeEl.textContent = `${hours}:${minutes}`;
 
-
-    const day = String(now.getDate()).padStart(2, "0");
-
-    const month = String(now.getMonth() + 1).padStart(2, "0");
-
+    const day = String(now.getDate()).padStart(2, '0');
+    const month = String(now.getMonth() + 1).padStart(2, '0');
     const year = now.getFullYear();
 
-    document.getElementById("date").textContent =
-        `${day}/${month}/${year}`;
-}
+    const dateEl = document.getElementById('date');
+    if (dateEl) dateEl.textContent = `${day}/${month}/${year}`;
+  }
+
+  /* Update immediately and every second */
+  updateClock();
+  setInterval(updateClock, 1000);
 
 
-/* Update immediately */
+  /* =========================
+     JARVIS CORE
+  ========================= */
+  const aiCore = document.getElementById('aiCore');
+  const assistantStatus = document.getElementById('assistant-status');
 
-updateClock();
+  /* =========================
+     LISTENING MODE
+  ========================= */
+  function startListening() {
+    if (aiCore) {
+      aiCore.classList.remove('speaking');
+      aiCore.classList.add('listening');
+    }
 
+    if (assistantStatus) assistantStatus.textContent = 'LISTENING...';
+  }
 
-/* Update every second */
+  /* =========================
+     SPEAKING MODE
+  ========================= */
+  function startSpeaking() {
+    if (aiCore) {
+      aiCore.classList.remove('listening');
+      aiCore.classList.add('speaking');
+    }
 
-setInterval(updateClock, 1000);
+    if (assistantStatus) assistantStatus.textContent = 'JARVIS SPEAKING...';
+  }
 
+  /* =========================
+     NORMAL MODE
+  ========================= */
+  function stopActivity() {
+    if (aiCore) {
+      aiCore.classList.remove('listening');
+      aiCore.classList.remove('speaking');
+    }
 
-/* =========================
-   JARVIS CORE
-========================= */
+    if (assistantStatus) assistantStatus.textContent = 'SYSTEM ONLINE';
+  }
 
-const aiCore =
-    document.getElementById("aiCore");
-
-const assistantStatus =
-    document.getElementById("assistant-status");
-
-
-/* =========================
-   LISTENING MODE
-========================= */
-
-function startListening() {
-
-    aiCore.classList.remove("speaking");
-
-    aiCore.classList.add("listening");
-
-    assistantStatus.textContent =
-        "LISTENING...";
-}
-
-
-/* =========================
-   SPEAKING MODE
-========================= */
-
-function startSpeaking() {
-
-    aiCore.classList.remove("listening");
-
-    aiCore.classList.add("speaking");
-
-    assistantStatus.textContent =
-        "JARVIS SPEAKING...";
-}
-
-
-/* =========================
-   NORMAL MODE
-========================= */
-
-function stopActivity() {
-
-    aiCore.classList.remove("listening");
-
-    aiCore.classList.remove("speaking");
-
-    assistantStatus.textContent =
-        "SYSTEM ONLINE";
-}
+  /* Expose controls for testing from the console */
+  window.updateClock = updateClock;
+  window.startListening = startListening;
+  window.startSpeaking = startSpeaking;
+  window.stopActivity = stopActivity;
+});
