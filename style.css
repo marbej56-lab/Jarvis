@@ -4,25 +4,23 @@
     box-sizing: border-box;
 }
 
+html,
+body {
+    width: 100%;
+    height: 100%;
+}
 
 body {
-
     background: #000;
-
     color: white;
-
-    font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
-
+    font-family: Arial, Helvetica, sans-serif;
     overflow: hidden;
 }
 
 
-/* =====================================
+/* =========================================
    MAIN INTERFACE
-===================================== */
+========================================= */
 
 .interface {
 
@@ -30,9 +28,7 @@ body {
     height: 100vh;
 
     display: flex;
-
     align-items: center;
-
     justify-content: center;
 
     position: relative;
@@ -41,466 +37,90 @@ body {
 
         radial-gradient(
             circle at center,
-            rgba(0, 140, 255, 0.08),
-            transparent 45%
+            rgba(0, 130, 255, 0.07),
+            transparent 42%
         );
 
 }
 
 
-/* =====================================
-   SPHERE AREA
-===================================== */
+/* =========================================
+   CENTER
+========================================= */
 
-.sphere-container {
+.center {
 
-    width: 520px;
-
-    height: 650px;
+    width: 600px;
+    height: 700px;
 
     display: flex;
-
     flex-direction: column;
 
+    justify-content: center;
     align-items: center;
 
-    justify-content: center;
-
     position: relative;
-
 }
 
 
-/* =====================================
-   SPHERE
-===================================== */
+/* =========================================
+   PARTICLE CANVAS
+========================================= */
 
-.sphere {
+#sphere {
 
-    width: 320px;
+    width: 600px;
+    height: 600px;
 
-    height: 320px;
-
-    position: relative;
-
-    border-radius: 50%;
-
-    display: flex;
-
-    justify-content: center;
-
-    align-items: center;
-
-    transition:
-
-        transform 0.7s
-        cubic-bezier(.2,.8,.2,1),
-
-        filter 0.7s ease;
-
+    display: block;
 }
 
 
-/* =====================================
-   PASSIVE MODE
-===================================== */
-
-.sphere.passive {
-
-    animation:
-
-        earthSpin 18s
-        linear
-        infinite;
-
-    filter:
-
-        drop-shadow(
-            0 0 20px #00bfff
-        )
-
-        drop-shadow(
-            0 0 50px
-            rgba(0,170,255,0.6)
-        );
-
-}
-
-
-/* =====================================
-   LISTENING
-===================================== */
-
-.sphere.listening {
-
-    transform: scale(0.62);
-
-    animation:
-
-        listeningPulse
-        1.5s
-        ease-in-out
-        infinite;
-
-    filter:
-
-        drop-shadow(
-            0 0 15px #00bfff
-        )
-
-        drop-shadow(
-            0 0 35px
-            rgba(0,170,255,0.5)
-        );
-
-}
-
-
-/* =====================================
-   THINKING
-===================================== */
-
-.sphere.thinking {
-
-    transform: scale(0.9);
-
-    animation:
-
-        thinkingPulse
-        1.8s
-        ease-in-out
-        infinite;
-
-    filter:
-
-        drop-shadow(
-            0 0 25px #00cfff
-        )
-
-        drop-shadow(
-            0 0 60px
-            rgba(0,170,255,0.7)
-        );
-
-}
-
-
-/* =====================================
-   SPEAKING
-===================================== */
-
-.sphere.speaking {
-
-    transform: scale(1.25);
-
-    animation:
-
-        speakingPulse
-        0.8s
-        ease-in-out
-        infinite;
-
-    filter:
-
-        drop-shadow(
-            0 0 30px #00eaff
-        )
-
-        drop-shadow(
-            0 0 80px #008cff
-        )
-
-        drop-shadow(
-            0 0 130px
-            rgba(0,150,255,0.8)
-        );
-
-}
-
-
-/* =====================================
-   CORE
-===================================== */
-
-.sphere-core {
-
-    width: 240px;
-
-    height: 240px;
-
-    border-radius: 50%;
-
-    position: absolute;
-
-    background:
-
-        radial-gradient(
-            circle at 50% 45%,
-
-            rgba(0,220,255,0.95)
-            0%,
-
-            rgba(0,130,255,0.75)
-            20%,
-
-            rgba(0,60,180,0.5)
-            45%,
-
-            rgba(0,20,80,0.15)
-            70%,
-
-            transparent
-            75%
-        );
-
-
-    box-shadow:
-
-        inset
-        0 0 40px
-        rgba(0,200,255,0.8),
-
-        0 0 20px
-        #00bfff,
-
-        0 0 50px
-        #008cff,
-
-        0 0 100px
-        rgba(0,140,255,0.6);
-
-}
-
-
-/* =====================================
-   RINGS
-===================================== */
-
-.ring {
-
-    position: absolute;
-
-    border-radius: 50%;
-
-    border:
-        2px solid
-        rgba(0,200,255,0.5);
-
-}
-
-
-.ring1 {
-
-    width: 270px;
-
-    height: 270px;
-
-    border-left-color:
-        transparent;
-
-    border-right-color:
-        #00bfff;
-
-    animation:
-
-        rotate1
-        8s
-        linear
-        infinite;
-
-}
-
-
-.ring2 {
-
-    width: 300px;
-
-    height: 220px;
-
-    border-top-color:
-        #00d9ff;
-
-    border-bottom-color:
-        transparent;
-
-    transform:
-        rotate(30deg);
-
-    animation:
-
-        rotate2
-        6s
-        linear
-        infinite;
-
-}
-
-
-.ring3 {
-
-    width: 220px;
-
-    height: 310px;
-
-    border-left-color:
-        #008cff;
-
-    border-right-color:
-        transparent;
-
-    transform:
-        rotate(-35deg);
-
-    animation:
-
-        rotate3
-        10s
-        linear
-        infinite;
-
-}
-
-
-/* =====================================
-   PARTICLES
-===================================== */
-
-.particles {
-
-    width: 300px;
-
-    height: 300px;
-
-    position: absolute;
-
-    border-radius: 50%;
-
-    background-image:
-
-        radial-gradient(
-            circle,
-
-            rgba(0,210,255,0.9)
-            1px,
-
-            transparent
-            2px
-        );
-
-    background-size:
-        13px 13px;
-
-    opacity: 0.5;
-
-    animation:
-
-        particleSpin
-        20s
-        linear
-        infinite;
-
-}
-
-
-/* =====================================
+/* =========================================
    JARVIS NAME
-===================================== */
+========================================= */
 
-.jarvis-name {
+.name {
 
-    margin-top: 25px;
-
-    color: #00cfff;
-
-    letter-spacing: 8px;
+    margin-top: -40px;
 
     font-size: 16px;
 
+    letter-spacing: 8px;
+
+    color: #00cfff;
+
     text-shadow:
-
         0 0 10px #00bfff,
-
         0 0 25px #008cff;
 
 }
 
 
-/* =====================================
+/* =========================================
    TRANSCRIPT
-===================================== */
+========================================= */
 
 .transcript {
 
     margin-top: 15px;
 
-    color:
-        rgba(255,255,255,0.65);
+    max-width: 500px;
 
-    font-size: 14px;
+    min-height: 25px;
 
     text-align: center;
 
-    max-width: 400px;
+    font-size: 13px;
+
+    color: rgba(255, 255, 255, 0.55);
 
 }
 
 
-/* =====================================
-   MICROPHONE
-===================================== */
-
-#micButton {
-
-    margin-top: 25px;
-
-    width: 60px;
-
-    height: 60px;
-
-    border-radius: 50%;
-
-    border:
-        1px solid
-        #00bfff;
-
-    background:
-        rgba(0,100,180,0.15);
-
-    color: #00cfff;
-
-    font-size: 25px;
-
-    cursor: pointer;
-
-    box-shadow:
-
-        0 0 15px
-        rgba(0,190,255,0.5);
-
-    transition: 0.3s;
-
-}
-
-
-#micButton:hover {
-
-    transform:
-        scale(1.1);
-
-    background:
-        rgba(0,170,255,0.25);
-
-    box-shadow:
-
-        0 0 30px
-        #00bfff;
-
-}
-
-
-/* =====================================
-   LEFT / RIGHT PANELS
-===================================== */
+/* =========================================
+   PANELS
+========================================= */
 
 .left-panel,
 .right-panel {
@@ -509,53 +129,45 @@ body {
 
     top: 50%;
 
-    transform:
-        translateY(-50%);
+    transform: translateY(-50%);
 
     width: 230px;
 
     padding: 25px;
 
     background:
-        rgba(0,20,35,0.25);
+        rgba(0, 15, 30, 0.3);
 
     border-left:
-        1px solid
-        rgba(0,190,255,0.2);
+        1px solid rgba(0, 190, 255, 0.2);
 
     border-right:
-        1px solid
-        rgba(0,190,255,0.2);
+        1px solid rgba(0, 190, 255, 0.2);
 
-    backdrop-filter:
-        blur(5px);
+    backdrop-filter: blur(5px);
+
 
 }
 
-
 .left-panel {
-
-    left: 5%;
-
+    left: 4%;
 }
 
 
 .right-panel {
-
-    right: 5%;
-
+    right: 4%;
 }
 
 
-/* =====================================
-   PANEL TITLE
-===================================== */
+/* =========================================
+   PANEL TITLES
+========================================= */
 
 .panel-title {
 
     color: #00cfff;
 
-    font-size: 12px;
+    font-size: 11px;
 
     letter-spacing: 3px;
 
@@ -564,11 +176,11 @@ body {
 }
 
 
-/* =====================================
-   STATUS
-===================================== */
+/* =========================================
+   CURRENT STATUS
+========================================= */
 
-.status-line {
+.current-status {
 
     display: flex;
 
@@ -580,21 +192,21 @@ body {
 
     font-size: 14px;
 
-    margin-bottom: 20px;
+    letter-spacing: 2px;
+
+    margin-bottom: 25px;
 
 }
 
 
-.dot {
+.status-dot {
 
-    width: 8px;
-
-    height: 8px;
+    width: 7px;
+    height: 7px;
 
     border-radius: 50%;
 
-    background:
-        #00eaff;
+    background: #00eaff;
 
     box-shadow:
         0 0 10px #00eaff;
@@ -602,34 +214,46 @@ body {
 }
 
 
-/* =====================================
-   STATUS OPTIONS
-===================================== */
+/* =========================================
+   MODES
+========================================= */
 
-.status-option {
+.mode {
 
-    color:
-        rgba(255,255,255,0.25);
+    color: rgba(255, 255, 255, 0.2);
 
-    font-size: 11px;
+    font-size: 10px;
 
     letter-spacing: 2px;
 
-    margin:
+    margin: 16px 0;
 
-        15px 0;
+    transition: 0.3s;
 
 }
 
+
+.mode.active {
+
+    color: #00cfff;
+
+    text-shadow:
+        0 0 10px #00bfff;
+
+}
+
+
+/* =========================================
+   SYSTEM INFO
+========================================= */
 
 .system-info {
 
     margin-top: 35px;
 
-    font-size: 10px;
+    font-size: 9px;
 
-    color:
-        rgba(255,255,255,0.4);
+    color: rgba(255, 255, 255, 0.35);
 
 }
 
@@ -638,29 +262,27 @@ body {
 
     display: flex;
 
-    justify-content:
-        space-between;
+    justify-content: space-between;
 
-    margin: 12px 0;
+    margin: 13px 0;
 
 }
 
 
 .system-info span {
 
-    color:
-        #00bfff;
+    color: #00bfff;
 
 }
 
 
-/* =====================================
+/* =========================================
    AI ACTIVITY
-===================================== */
+========================================= */
 
 #activity {
 
-    max-height: 350px;
+    max-height: 300px;
 
     overflow: hidden;
 
@@ -673,19 +295,17 @@ body {
 
     align-items: flex-start;
 
-    gap: 10px;
-
-    color:
-        rgba(255,255,255,0.55);
-
-    font-size: 11px;
-
-    line-height: 1.5;
+    gap: 9px;
 
     margin-bottom: 15px;
 
-    animation:
-        fadeIn 0.4s ease;
+    font-size: 10px;
+
+    line-height: 1.5;
+
+    color: rgba(255, 255, 255, 0.5);
+
+    animation: activityIn 0.4s ease;
 
 }
 
@@ -693,17 +313,15 @@ body {
 .activity-dot {
 
     width: 5px;
-
     height: 5px;
 
     min-width: 5px;
 
-    margin-top: 5px;
+    margin-top: 4px;
 
     border-radius: 50%;
 
-    background:
-        #00bfff;
+    background: #00bfff;
 
     box-shadow:
         0 0 8px #00bfff;
@@ -711,192 +329,28 @@ body {
 }
 
 
-/* =====================================
-   ANIMATIONS
-===================================== */
+/* =========================================
+   ACTIVITY ANIMATION
+========================================= */
 
-@keyframes earthSpin {
-
-    from {
-
-        transform:
-            rotateY(0deg);
-
-    }
-
-    to {
-
-        transform:
-            rotateY(360deg);
-
-    }
-
-}
-
-
-@keyframes particleSpin {
+@keyframes activityIn {
 
     from {
-
-        transform:
-            rotate(0deg);
-
-    }
-
-    to {
-
-        transform:
-            rotate(360deg);
-
-    }
-
-}
-
-
-@keyframes rotate1 {
-
-    from {
-
-        transform:
-            rotate(0deg);
-
-    }
-
-    to {
-
-        transform:
-            rotate(360deg);
-
-    }
-
-}
-
-
-@keyframes rotate2 {
-
-    from {
-
-        transform:
-            rotate(30deg);
-
-    }
-
-    to {
-
-        transform:
-            rotate(390deg);
-
-    }
-
-}
-
-
-@keyframes rotate3 {
-
-    from {
-
-        transform:
-            rotate(-35deg);
-
-    }
-
-    to {
-
-        transform:
-            rotate(-395deg);
-
-    }
-
-}
-
-
-@keyframes listeningPulse {
-
-    0%,100% {
-
-        filter:
-            drop-shadow(
-                0 0 10px #00bfff
-            );
-
-    }
-
-    50% {
-
-        filter:
-            drop-shadow(
-                0 0 30px #00bfff
-            );
-
-    }
-
-}
-
-
-@keyframes thinkingPulse {
-
-    0%,100% {
-
-        transform:
-            scale(0.9);
-
-    }
-
-    50% {
-
-        transform:
-            scale(0.97);
-
-    }
-
-}
-
-
-@keyframes speakingPulse {
-
-    0%,100% {
-
-        transform:
-            scale(1.15);
-
-    }
-
-    50% {
-
-        transform:
-            scale(1.3);
-
-    }
-
-}
-
-
-@keyframes fadeIn {
-
-    from {
-
         opacity: 0;
-
-        transform:
-            translateX(10px);
-
+        transform: translateX(10px);
     }
 
     to {
-
         opacity: 1;
-
-        transform:
-            translateX(0);
-
+        transform: translateX(0);
     }
 
 }
 
 
-/* =====================================
+/* =========================================
    MOBILE
-===================================== */
+========================================= */
 
 @media (max-width: 900px) {
 
@@ -907,11 +361,20 @@ body {
 
     }
 
-    .sphere {
+    .center {
 
-        width: 280px;
+        width: 100vw;
+        height: 100vh;
 
-        height: 280px;
+    }
+
+    #sphere {
+
+        width: 100vw;
+        height: 100vw;
+
+        max-width: 600px;
+        max-height: 600px;
 
     }
 
