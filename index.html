@@ -1,14 +1,64 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>JARVIS</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JARVIS</title>
+    <link rel="stylesheet" href="style.css">
 </head>
-<body>
-  <h1>JARVIS</h1>
 
-  <script src="script.js"></script>
+<body>
+
+    <main class="dashboard">
+
+        <!-- LEFT INFORMATION PANEL -->
+        <aside class="info-panel">
+
+            <div class="info-item">
+                <span class="label">TIME</span>
+                <span id="time">--:--</span>
+            </div>
+
+            <div class="info-item">
+                <span class="label">DATE</span>
+                <span id="date">--/--/----</span>
+            </div>
+
+            <div class="info-item">
+                <span class="label">WEATHER</span>
+                <span id="weather">UNAVAILABLE</span>
+            </div>
+
+            <div class="info-item">
+                <span class="label">SYSTEM</span>
+                <span id="system-status">ONLINE</span>
+            </div>
+
+        </aside>
+
+
+        <!-- MAIN JARVIS CORE -->
+        <section class="core-section">
+
+            <div id="aiCore" class="ai-sphere">
+                <div class="sphere-ring ring-one"></div>
+                <div class="sphere-ring ring-two"></div>
+                <div class="sphere-ring ring-three"></div>
+                <div class="sphere-center"></div>
+            </div>
+
+            <h1>JARVIS</h1>
+
+            <p id="assistant-status" class="status">
+                SYSTEM ONLINE
+            </p>
+
+        </section>
+
+    </main>
+
+
+    <script src="script.js"></script>
+
 </body>
 </html>
