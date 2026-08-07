@@ -12,33 +12,46 @@
 
 <body>
 
-    <div class="interface">
+    <main class="interface">
 
-        <!-- LEFT STATUS PANEL -->
-        <div class="left-panel">
+        <!-- LEFT STATUS -->
+        <section class="left-panel">
 
             <div class="panel-title">
                 SYSTEM STATUS
             </div>
 
-            <div class="status-line active">
-                <span class="dot"></span>
-                <span id="statusText">PASSIVE</span>
+            <div class="current-status">
+                <span class="status-dot"></span>
+                <span id="modeText">PASSIVE</span>
             </div>
 
-            <div class="status-option">
-                LISTENING
-            </div>
+            <div class="mode-list">
 
-            <div class="status-option">
-                THINKING
-            </div>
+                <div id="passiveMode" class="mode active">
+                    PASSIVE
+                </div>
 
-            <div class="status-option">
-                SPEAKING
+                <div id="listeningMode" class="mode">
+                    LISTENING
+                </div>
+
+                <div id="thinkingMode" class="mode">
+                    THINKING
+                </div>
+
+                <div id="speakingMode" class="mode">
+                    SPEAKING
+                </div>
+
             </div>
 
             <div class="system-info">
+
+                <div>
+                    MICROPHONE
+                    <span>ACTIVE</span>
+                </div>
 
                 <div>
                     CORE
@@ -46,36 +59,21 @@
                 </div>
 
                 <div>
-                    AUDIO
-                    <span>READY</span>
-                </div>
-
-                <div>
                     AI
-                    <span>STANDBY</span>
+                    <span>ONLINE</span>
                 </div>
 
             </div>
 
-        </div>
+        </section>
 
 
-        <!-- MAIN JARVIS SPHERE -->
-        <div class="sphere-container">
+        <!-- CENTER -->
+        <section class="center">
 
-            <div id="jarvisSphere" class="sphere passive">
+            <canvas id="sphere"></canvas>
 
-                <div class="sphere-core"></div>
-
-                <div class="ring ring1"></div>
-                <div class="ring ring2"></div>
-                <div class="ring ring3"></div>
-
-                <div class="particles"></div>
-
-            </div>
-
-            <div class="jarvis-name">
+            <div class="name">
                 J.A.R.V.I.S.
             </div>
 
@@ -83,32 +81,21 @@
                 System ready
             </div>
 
-            <button id="micButton">
-                🎙
-            </button>
-
-        </div>
+        </section>
 
 
-        <!-- RIGHT AI ACTIVITY PANEL -->
-        <div class="right-panel">
+        <!-- RIGHT AI ACTIVITY -->
+        <section class="right-panel">
 
             <div class="panel-title">
                 AI ACTIVITY
             </div>
 
-            <div id="activity">
+            <div id="activity"></div>
 
-                <div class="activity-line">
-                    <span class="activity-dot"></span>
-                    <span>System initialized</span>
-                </div>
+        </section>
 
-            </div>
-
-        </div>
-
-    </div>
+    </main>
 
 
     <script src="script.js"></script>
