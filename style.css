@@ -1,317 +1,918 @@
 * {
+    margin: 0;
+    padding: 0;
     box-sizing: border-box;
 }
 
-html,
-body {
-    margin: 0;
-    width: 100%;
-    height: 100%;
-}
 
 body {
-    background:
-        radial-gradient(circle at center, #061a32 0%, #020812 45%, #000308 100%);
+
+    background: #000;
 
     color: white;
 
-    font-family: Arial, sans-serif;
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
 
     overflow: hidden;
 }
 
 
-/* MAIN SCREEN */
+/* =====================================
+   MAIN INTERFACE
+===================================== */
 
-.dashboard {
-    width: 100%;
+.interface {
+
+    width: 100vw;
     height: 100vh;
 
     display: flex;
+
     align-items: center;
+
     justify-content: center;
 
     position: relative;
+
+    background:
+
+        radial-gradient(
+            circle at center,
+            rgba(0, 140, 255, 0.08),
+            transparent 45%
+        );
+
 }
 
 
-/* LEFT INFORMATION PANEL */
+/* =====================================
+   SPHERE AREA
+===================================== */
 
-.info-panel {
-    position: absolute;
+.sphere-container {
 
-    left: 35px;
-    top: 50%;
+    width: 520px;
 
-    transform: translateY(-50%);
-
-    width: 190px;
-}
-
-.info-item {
-    margin-bottom: 28px;
-
-    padding-left: 14px;
-
-    border-left: 2px solid #008cff;
+    height: 650px;
 
     display: flex;
+
     flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    position: relative;
+
 }
 
-.label {
-    font-size: 10px;
+
+/* =====================================
+   SPHERE
+===================================== */
+
+.sphere {
+
+    width: 320px;
+
+    height: 320px;
+
+    position: relative;
+
+    border-radius: 50%;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    transition:
+
+        transform 0.7s
+        cubic-bezier(.2,.8,.2,1),
+
+        filter 0.7s ease;
+
+}
+
+
+/* =====================================
+   PASSIVE MODE
+===================================== */
+
+.sphere.passive {
+
+    animation:
+
+        earthSpin 18s
+        linear
+        infinite;
+
+    filter:
+
+        drop-shadow(
+            0 0 20px #00bfff
+        )
+
+        drop-shadow(
+            0 0 50px
+            rgba(0,170,255,0.6)
+        );
+
+}
+
+
+/* =====================================
+   LISTENING
+===================================== */
+
+.sphere.listening {
+
+    transform: scale(0.62);
+
+    animation:
+
+        listeningPulse
+        1.5s
+        ease-in-out
+        infinite;
+
+    filter:
+
+        drop-shadow(
+            0 0 15px #00bfff
+        )
+
+        drop-shadow(
+            0 0 35px
+            rgba(0,170,255,0.5)
+        );
+
+}
+
+
+/* =====================================
+   THINKING
+===================================== */
+
+.sphere.thinking {
+
+    transform: scale(0.9);
+
+    animation:
+
+        thinkingPulse
+        1.8s
+        ease-in-out
+        infinite;
+
+    filter:
+
+        drop-shadow(
+            0 0 25px #00cfff
+        )
+
+        drop-shadow(
+            0 0 60px
+            rgba(0,170,255,0.7)
+        );
+
+}
+
+
+/* =====================================
+   SPEAKING
+===================================== */
+
+.sphere.speaking {
+
+    transform: scale(1.25);
+
+    animation:
+
+        speakingPulse
+        0.8s
+        ease-in-out
+        infinite;
+
+    filter:
+
+        drop-shadow(
+            0 0 30px #00eaff
+        )
+
+        drop-shadow(
+            0 0 80px #008cff
+        )
+
+        drop-shadow(
+            0 0 130px
+            rgba(0,150,255,0.8)
+        );
+
+}
+
+
+/* =====================================
+   CORE
+===================================== */
+
+.sphere-core {
+
+    width: 240px;
+
+    height: 240px;
+
+    border-radius: 50%;
+
+    position: absolute;
+
+    background:
+
+        radial-gradient(
+            circle at 50% 45%,
+
+            rgba(0,220,255,0.95)
+            0%,
+
+            rgba(0,130,255,0.75)
+            20%,
+
+            rgba(0,60,180,0.5)
+            45%,
+
+            rgba(0,20,80,0.15)
+            70%,
+
+            transparent
+            75%
+        );
+
+
+    box-shadow:
+
+        inset
+        0 0 40px
+        rgba(0,200,255,0.8),
+
+        0 0 20px
+        #00bfff,
+
+        0 0 50px
+        #008cff,
+
+        0 0 100px
+        rgba(0,140,255,0.6);
+
+}
+
+
+/* =====================================
+   RINGS
+===================================== */
+
+.ring {
+
+    position: absolute;
+
+    border-radius: 50%;
+
+    border:
+        2px solid
+        rgba(0,200,255,0.5);
+
+}
+
+
+.ring1 {
+
+    width: 270px;
+
+    height: 270px;
+
+    border-left-color:
+        transparent;
+
+    border-right-color:
+        #00bfff;
+
+    animation:
+
+        rotate1
+        8s
+        linear
+        infinite;
+
+}
+
+
+.ring2 {
+
+    width: 300px;
+
+    height: 220px;
+
+    border-top-color:
+        #00d9ff;
+
+    border-bottom-color:
+        transparent;
+
+    transform:
+        rotate(30deg);
+
+    animation:
+
+        rotate2
+        6s
+        linear
+        infinite;
+
+}
+
+
+.ring3 {
+
+    width: 220px;
+
+    height: 310px;
+
+    border-left-color:
+        #008cff;
+
+    border-right-color:
+        transparent;
+
+    transform:
+        rotate(-35deg);
+
+    animation:
+
+        rotate3
+        10s
+        linear
+        infinite;
+
+}
+
+
+/* =====================================
+   PARTICLES
+===================================== */
+
+.particles {
+
+    width: 300px;
+
+    height: 300px;
+
+    position: absolute;
+
+    border-radius: 50%;
+
+    background-image:
+
+        radial-gradient(
+            circle,
+
+            rgba(0,210,255,0.9)
+            1px,
+
+            transparent
+            2px
+        );
+
+    background-size:
+        13px 13px;
+
+    opacity: 0.5;
+
+    animation:
+
+        particleSpin
+        20s
+        linear
+        infinite;
+
+}
+
+
+/* =====================================
+   JARVIS NAME
+===================================== */
+
+.jarvis-name {
+
+    margin-top: 25px;
+
+    color: #00cfff;
+
+    letter-spacing: 8px;
+
+    font-size: 16px;
+
+    text-shadow:
+
+        0 0 10px #00bfff,
+
+        0 0 25px #008cff;
+
+}
+
+
+/* =====================================
+   TRANSCRIPT
+===================================== */
+
+.transcript {
+
+    margin-top: 15px;
+
+    color:
+        rgba(255,255,255,0.65);
+
+    font-size: 14px;
+
+    text-align: center;
+
+    max-width: 400px;
+
+}
+
+
+/* =====================================
+   MICROPHONE
+===================================== */
+
+#micButton {
+
+    margin-top: 25px;
+
+    width: 60px;
+
+    height: 60px;
+
+    border-radius: 50%;
+
+    border:
+        1px solid
+        #00bfff;
+
+    background:
+        rgba(0,100,180,0.15);
+
+    color: #00cfff;
+
+    font-size: 25px;
+
+    cursor: pointer;
+
+    box-shadow:
+
+        0 0 15px
+        rgba(0,190,255,0.5);
+
+    transition: 0.3s;
+
+}
+
+
+#micButton:hover {
+
+    transform:
+        scale(1.1);
+
+    background:
+        rgba(0,170,255,0.25);
+
+    box-shadow:
+
+        0 0 30px
+        #00bfff;
+
+}
+
+
+/* =====================================
+   LEFT / RIGHT PANELS
+===================================== */
+
+.left-panel,
+.right-panel {
+
+    position: absolute;
+
+    top: 50%;
+
+    transform:
+        translateY(-50%);
+
+    width: 230px;
+
+    padding: 25px;
+
+    background:
+        rgba(0,20,35,0.25);
+
+    border-left:
+        1px solid
+        rgba(0,190,255,0.2);
+
+    border-right:
+        1px solid
+        rgba(0,190,255,0.2);
+
+    backdrop-filter:
+        blur(5px);
+
+}
+
+
+.left-panel {
+
+    left: 5%;
+
+}
+
+
+.right-panel {
+
+    right: 5%;
+
+}
+
+
+/* =====================================
+   PANEL TITLE
+===================================== */
+
+.panel-title {
+
+    color: #00cfff;
+
+    font-size: 12px;
 
     letter-spacing: 3px;
 
-    color: #4dbaff;
+    margin-bottom: 25px;
 
-    margin-bottom: 6px;
-}
-
-.info-item span:last-child {
-    font-size: 20px;
-
-    letter-spacing: 1px;
-
-    text-shadow:
-        0 0 8px #008cff;
 }
 
 
-/* MAIN CORE */
+/* =====================================
+   STATUS
+===================================== */
 
-.core-section {
+.status-line {
+
     display: flex;
-
-    flex-direction: column;
 
     align-items: center;
 
-    justify-content: center;
+    gap: 10px;
 
-    width: 100%;
+    color: #00eaff;
+
+    font-size: 14px;
+
+    margin-bottom: 20px;
+
 }
 
 
-/* AI SPHERE */
+.dot {
 
-.ai-sphere {
-    width: 230px;
-    height: 230px;
+    width: 8px;
 
-    position: relative;
+    height: 8px;
 
     border-radius: 50%;
 
     background:
-        radial-gradient(
-            circle,
-            #ffffff 0%,
-            #8ddaff 4%,
-            #20aaff 12%,
-            #0077d9 30%,
-            #003f78 50%,
-            #00182f 70%,
-            transparent 73%
-        );
+        #00eaff;
 
     box-shadow:
-        0 0 15px #008cff,
-        0 0 35px #008cff,
-        0 0 70px #0066cc,
-        0 0 120px rgba(0, 140, 255, 0.5);
+        0 0 10px #00eaff;
 
-    animation:
-        sphereFloat 4s ease-in-out infinite;
-
-    transition:
-        transform 0.5s ease,
-        box-shadow 0.5s ease;
 }
 
 
-/* ROTATING RINGS */
+/* =====================================
+   STATUS OPTIONS
+===================================== */
 
-.sphere-ring {
-    position: absolute;
+.status-option {
 
-    width: 100%;
-    height: 100%;
-
-    border-radius: 50%;
-
-    border: 1px solid rgba(100, 200, 255, 0.6);
-
-    box-shadow:
-        0 0 10px rgba(0, 140, 255, 0.8);
-
-    top: 0;
-    left: 0;
-}
-
-.ring-one {
-    animation: rotateRingOne 8s linear infinite;
-}
-
-.ring-two {
-    transform: rotateX(65deg);
-
-    animation: rotateRingTwo 10s linear infinite;
-}
-
-.ring-three {
-    transform: rotateY(65deg);
-
-    animation: rotateRingThree 12s linear infinite;
-}
-
-
-/* BRIGHT CENTER */
-
-.sphere-center {
-    position: absolute;
-
-    width: 45px;
-    height: 45px;
-
-    border-radius: 50%;
-
-    background: white;
-
-    top: 50%;
-    left: 50%;
-
-    transform: translate(-50%, -50%);
-
-    box-shadow:
-        0 0 15px white,
-        0 0 30px #42b8ff,
-        0 0 60px #008cff;
-}
-
-
-/* JARVIS TEXT */
-
-h1 {
-    margin-top: 38px;
-    margin-bottom: 7px;
-
-    font-size: 30px;
-
-    letter-spacing: 12px;
-
-    text-shadow:
-        0 0 10px #008cff,
-        0 0 25px #0066cc;
-}
-
-.status {
-    margin: 0;
-
-    color: #42b8ff;
+    color:
+        rgba(255,255,255,0.25);
 
     font-size: 11px;
 
-    letter-spacing: 4px;
+    letter-spacing: 2px;
 
-    text-shadow:
-        0 0 10px #008cff;
+    margin:
+
+        15px 0;
+
 }
 
 
-/* NORMAL FLOATING ANIMATION */
+.system-info {
 
-@keyframes sphereFloat {
+    margin-top: 35px;
 
-    0% {
-        transform: scale(1);
+    font-size: 10px;
+
+    color:
+        rgba(255,255,255,0.4);
+
+}
+
+
+.system-info div {
+
+    display: flex;
+
+    justify-content:
+        space-between;
+
+    margin: 12px 0;
+
+}
+
+
+.system-info span {
+
+    color:
+        #00bfff;
+
+}
+
+
+/* =====================================
+   AI ACTIVITY
+===================================== */
+
+#activity {
+
+    max-height: 350px;
+
+    overflow: hidden;
+
+}
+
+
+.activity-line {
+
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 10px;
+
+    color:
+        rgba(255,255,255,0.55);
+
+    font-size: 11px;
+
+    line-height: 1.5;
+
+    margin-bottom: 15px;
+
+    animation:
+        fadeIn 0.4s ease;
+
+}
+
+
+.activity-dot {
+
+    width: 5px;
+
+    height: 5px;
+
+    min-width: 5px;
+
+    margin-top: 5px;
+
+    border-radius: 50%;
+
+    background:
+        #00bfff;
+
+    box-shadow:
+        0 0 8px #00bfff;
+
+}
+
+
+/* =====================================
+   ANIMATIONS
+===================================== */
+
+@keyframes earthSpin {
+
+    from {
+
+        transform:
+            rotateY(0deg);
+
+    }
+
+    to {
+
+        transform:
+            rotateY(360deg);
+
+    }
+
+}
+
+
+@keyframes particleSpin {
+
+    from {
+
+        transform:
+            rotate(0deg);
+
+    }
+
+    to {
+
+        transform:
+            rotate(360deg);
+
+    }
+
+}
+
+
+@keyframes rotate1 {
+
+    from {
+
+        transform:
+            rotate(0deg);
+
+    }
+
+    to {
+
+        transform:
+            rotate(360deg);
+
+    }
+
+}
+
+
+@keyframes rotate2 {
+
+    from {
+
+        transform:
+            rotate(30deg);
+
+    }
+
+    to {
+
+        transform:
+            rotate(390deg);
+
+    }
+
+}
+
+
+@keyframes rotate3 {
+
+    from {
+
+        transform:
+            rotate(-35deg);
+
+    }
+
+    to {
+
+        transform:
+            rotate(-395deg);
+
+    }
+
+}
+
+
+@keyframes listeningPulse {
+
+    0%,100% {
+
+        filter:
+            drop-shadow(
+                0 0 10px #00bfff
+            );
+
     }
 
     50% {
-        transform: scale(1.04);
+
+        filter:
+            drop-shadow(
+                0 0 30px #00bfff
+            );
+
     }
 
-    100% {
-        transform: scale(1);
-    }
 }
 
 
-/* RING ROTATIONS */
+@keyframes thinkingPulse {
 
-@keyframes rotateRingOne {
+    0%,100% {
 
-    from {
-        transform: rotate(0deg);
+        transform:
+            scale(0.9);
+
     }
 
-    to {
-        transform: rotate(360deg);
+    50% {
+
+        transform:
+            scale(0.97);
+
     }
+
 }
 
-@keyframes rotateRingTwo {
-
-    from {
-        transform: rotateX(65deg) rotate(0deg);
-    }
-
-    to {
-        transform: rotateX(65deg) rotate(360deg);
-    }
-}
-
-@keyframes rotateRingThree {
-
-    from {
-        transform: rotateY(65deg) rotate(0deg);
-    }
-
-    to {
-        transform: rotateY(65deg) rotate(360deg);
-    }
-}
-
-
-/* LISTENING MODE */
-
-.ai-sphere.listening {
-    transform: scale(0.78);
-
-    box-shadow:
-        0 0 10px #008cff,
-        0 0 25px #008cff,
-        0 0 50px #0066cc;
-}
-
-
-/* SPEAKING MODE */
-
-.ai-sphere.speaking {
-    transform: scale(1.25);
-
-    box-shadow:
-        0 0 20px #008cff,
-        0 0 50px #008cff,
-        0 0 100px #008cff,
-        0 0 160px rgba(0, 140, 255, 0.7);
-
-    animation:
-        speakingPulse 1s ease-in-out infinite;
-}
 
 @keyframes speakingPulse {
 
-    0% {
-        transform: scale(1.15);
+    0%,100% {
+
+        transform:
+            scale(1.15);
+
     }
 
     50% {
-        transform: scale(1.3);
+
+        transform:
+            scale(1.3);
+
     }
 
-    100% {
-        transform: scale(1.15);
+}
+
+
+@keyframes fadeIn {
+
+    from {
+
+        opacity: 0;
+
+        transform:
+            translateX(10px);
+
     }
+
+    to {
+
+        opacity: 1;
+
+        transform:
+            translateX(0);
+
+    }
+
+}
+
+
+/* =====================================
+   MOBILE
+===================================== */
+
+@media (max-width: 900px) {
+
+    .left-panel,
+    .right-panel {
+
+        display: none;
+
+    }
+
+    .sphere {
+
+        width: 280px;
+
+        height: 280px;
+
+    }
+
 }
