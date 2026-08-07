@@ -1,64 +1,118 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JARVIS</title>
+
+    <title>J.A.R.V.I.S.</title>
+
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-    <main class="dashboard">
+    <div class="interface">
 
-        <!-- LEFT INFORMATION PANEL -->
-        <aside class="info-panel">
+        <!-- LEFT STATUS PANEL -->
+        <div class="left-panel">
 
-            <div class="info-item">
-                <span class="label">TIME</span>
-                <span id="time">--:--</span>
+            <div class="panel-title">
+                SYSTEM STATUS
             </div>
 
-            <div class="info-item">
-                <span class="label">DATE</span>
-                <span id="date">--/--/----</span>
+            <div class="status-line active">
+                <span class="dot"></span>
+                <span id="statusText">PASSIVE</span>
             </div>
 
-            <div class="info-item">
-                <span class="label">WEATHER</span>
-                <span id="weather">UNAVAILABLE</span>
+            <div class="status-option">
+                LISTENING
             </div>
 
-            <div class="info-item">
-                <span class="label">SYSTEM</span>
-                <span id="system-status">ONLINE</span>
+            <div class="status-option">
+                THINKING
             </div>
 
-        </aside>
-
-
-        <!-- MAIN JARVIS CORE -->
-        <section class="core-section">
-
-            <div id="aiCore" class="ai-sphere">
-                <div class="sphere-ring ring-one"></div>
-                <div class="sphere-ring ring-two"></div>
-                <div class="sphere-ring ring-three"></div>
-                <div class="sphere-center"></div>
+            <div class="status-option">
+                SPEAKING
             </div>
 
-            <h1>JARVIS</h1>
+            <div class="system-info">
 
-            <p id="assistant-status" class="status">
-                SYSTEM ONLINE
-            </p>
+                <div>
+                    CORE
+                    <span>ONLINE</span>
+                </div>
 
-        </section>
+                <div>
+                    AUDIO
+                    <span>READY</span>
+                </div>
 
-    </main>
+                <div>
+                    AI
+                    <span>STANDBY</span>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- MAIN JARVIS SPHERE -->
+        <div class="sphere-container">
+
+            <div id="jarvisSphere" class="sphere passive">
+
+                <div class="sphere-core"></div>
+
+                <div class="ring ring1"></div>
+                <div class="ring ring2"></div>
+                <div class="ring ring3"></div>
+
+                <div class="particles"></div>
+
+            </div>
+
+            <div class="jarvis-name">
+                J.A.R.V.I.S.
+            </div>
+
+            <div id="transcript" class="transcript">
+                System ready
+            </div>
+
+            <button id="micButton">
+                🎙
+            </button>
+
+        </div>
+
+
+        <!-- RIGHT AI ACTIVITY PANEL -->
+        <div class="right-panel">
+
+            <div class="panel-title">
+                AI ACTIVITY
+            </div>
+
+            <div id="activity">
+
+                <div class="activity-line">
+                    <span class="activity-dot"></span>
+                    <span>System initialized</span>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
 
 
     <script src="script.js"></script>
 
 </body>
+
 </html>
