@@ -50,7 +50,7 @@
 
                 <div>
                     MICROPHONE
-                    <span>ACTIVE</span>
+                    <span id="micStatus">ACTIVE</span>
                 </div>
 
                 <div>
@@ -81,12 +81,6 @@
                 System ready
             </div>
 
-            <!-- AI INPUT CONTROL -->
-            <div class="ai-input-container" style="margin-top: 15px; display: flex; gap: 8px; justify-content: center; width: 100%; max-width: 400px;">
-                <input type="text" id="userInput" placeholder="Enter command or query..." style="flex: 1; padding: 8px 12px; background: rgba(0,0,0,0.5); border: 1px solid #00d2ff; color: #fff; border-radius: 4px; outline: none;">
-                <button id="sendBtn" onclick="sendPrompt()" style="padding: 8px 16px; background: #00d2ff; color: #000; border: none; border-radius: 4px; font-weight: bold; cursor: pointer;">SEND</button>
-            </div>
-
         </section>
 
 
@@ -106,80 +100,160 @@
 
     <script src="script.js"></script>
 
-    <!-- CLOUDFLARE WORKER INTEGRATION SCRIPT -->
+
+    <!-- CLOUDFLARE AI CONNECTION -->
     <script>
-        async function sendPrompt() {
-            const userInput = document.getElementById('userInput');
-            const sendBtn = document.getElementById('sendBtn');
+
+        async function sendToAI(promptText) {
+
             const transcript = document.getElementById('transcript');
             const activity = document.getElementById('activity');
 
-            // UI Mode Elements
             const modeText = document.getElementById('modeText');
             const passiveMode = document.getElementById('passiveMode');
             const thinkingMode = document.getElementById('thinkingMode');
 
-            const promptText = userInput.value.trim();
-            if (!promptText) return;
+            if (!promptText || !promptText.trim()) return;
 
-            // Set UI state to THINKING
-            sendBtn.disabled = true;
+            // THINKING MODE
             if (modeText) modeText.innerText = 'THINKING';
-            if (passiveMode) passiveMode.classList.remove('active');
-            if (thinkingMode) thinkingMode.classList.add('active');
 
-            if (transcript) transcript.innerText = 'Processing command...';
+            if (passiveMode)
+                passiveMode.classList.remove('active');
+
+            if (thinkingMode)
+                thinkingMode.classList.add('active');
+
+            if (transcript)
+                transcript.innerText = 'Processing command...';
+
+            // Add command to activity
+            if (activity) {
+
+                const newLog = document.createElement('div');
+
+                newLog.style.marginBottom = '8px';
+
+                newLog.innerText = '> ' + promptText;
+
+                activity.prepend(newLog);
+            }
 
             try {
-                // Call your Cloudflare Worker endpoint
-                const response = await fetch('https://jrv.marcbejjani456.workers.dev/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ prompt: promptText }),
-                });
+
+                const response = await fetch(
+                    'https://jrv.marcbejjani456.workers.dev/',
+                    {
+                        method: 'POST',
+
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+
+                        body: JSON.stringify({
+                            prompt: promptText
+                        })
+                    }
+                );
 
                 const data = await response.json();
 
-                // Check for valid response text from Gemini
-                if (data.candidates && data.candidates[0]?.content?.parts[0]?.text) {
-                    const aiText = data.candidates[0].content.parts[0].text;
-                    if (transcript) transcript.innerText = aiText;
+                if (
+                    data.candidates &&
+                    data.candidates[0]?.content?.parts[0]?.text
+                ) {
 
-                    // Log activity inside the right panel
-                    if (activity) {
-                        const newLog = document.createElement('div');
-                        newLog.style.marginBottom = '8px';
-                        newLog.innerText = '> ' + promptText;
-                        activity.prepend(newLog);
+                    const aiText =
+                        data.candidates[0].content.parts[0].text;
+
+                    if (transcript)
+                        transcript.innerText = aiText;
+
+                    // SPEAK RESPONSE
+                    if ('speechSynthesis' in window) {
+
+                        const speech =
+                            new SpeechSynthesisUtterance(aiText);
+
+                        speech.rate = 1;
+                        speech.pitch = 1;
+
+                        speech.onstart = function () {
+
+                            if (modeText)
+                                modeText.innerText = 'SPEAKING';
+                        };
+
+                        speech.onend = function () {
+
+                            if (modeText)
+                                modeText.innerText = 'PASSIVE';
+
+                            if (thinkingMode)
+                                thinkingMode.classList.remove('active');
+
+                            if (passiveMode)
+                                passiveMode.classList.add('active');
+                        };
+
+                        speechSynthesis.cancel();
+
+                        speechSynthesis.speak(speech);
+
                     }
-                    userInput.value = '';
-                } else if (data.error) {
-                    if (transcript) transcript.innerText = 'ERROR: ' + (data.error.message || JSON.stringify(data.error));
-                } else {
-                    if (transcript) transcript.innerText = 'System received empty response.';
+
                 }
-            } catch (error) {
-                if (transcript) transcript.innerText = 'Connection error: ' + error.message;
-            } finally {
-                // Restore UI state to PASSIVE
-                sendBtn.disabled = false;
-                if (modeText) modeText.innerText = 'PASSIVE';
-                if (thinkingMode) thinkingMode.classList.remove('active');
-                if (passiveMode) passiveMode.classList.add('active');
+
+                else if (data.error) {
+
+                    if (transcript)
+                        transcript.innerText =
+                            'ERROR: ' +
+                            (data.error.message ||
+                             JSON.stringify(data.error));
+
+                }
+
+                else {
+
+                    if (transcript)
+                        transcript.innerText =
+                            'System received empty response.';
+
+                }
+
             }
+
+            catch (error) {
+
+                if (transcript)
+                    transcript.innerText =
+                        'Connection error: ' + error.message;
+
+            }
+
+            finally {
+
+                if (!('speechSynthesis' in window)) {
+
+                    if (modeText)
+                        modeText.innerText = 'PASSIVE';
+
+                    if (thinkingMode)
+                        thinkingMode.classList.remove('active');
+
+                    if (passiveMode)
+                        passiveMode.classList.add('active');
+                }
+
+            }
+
         }
 
-        // Allow pressing Enter key to send prompt
-        document.getElementById('userInput').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') {
-                sendPrompt();
-            }
-        });
     </script>
 
 </body>
 
 </html>
+
 
