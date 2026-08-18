@@ -1,5 +1,5 @@
 /* =====================================================
-   J.A.R.V.I.S. VOICE AI CORE - CLOUD SYNCED (SAFE LOAD)
+   J.A.R.V.I.S. VOICE AI CORE - CLOUD SYNCED
 ===================================================== */
 
 const firebaseConfig = {
@@ -11,6 +11,7 @@ const firebaseConfig = {
   appId: "1:210322906311:web:1a8c70feeeab21822c72e2"
 };
 
+// DECLARE ONCE HERE (DO NOT RE-DECLARE LOWER DOWN)
 let db = null;
 let memoryRef = null;
 
@@ -21,7 +22,7 @@ let jarvisMemory = {
     savedFacts: []
 };
 
-// Safe Firebase Initialization
+// Initialize Firebase safely
 try {
     if (typeof firebase !== "undefined" && firebase.apps) {
         if (firebase.apps.length === 0) {
@@ -34,53 +35,6 @@ try {
     console.log("Firebase init skipped:", e);
 }
 
-// Load Memory Safely (Never crashes app)
-async function loadCloudMemory() {
-    // 1. Always load local memory as baseline first
-    const local = localStorage.getItem("jarvis_memory_v1");
-    if (local) {
-        try { jarvisMemory = JSON.parse(local); } catch(e){}
-    }
-
-    // 2. Try fetching from Firebase without crashing
-    if (memoryRef) {
-        try {
-            const doc = await memoryRef.get();
-            if (doc && doc.exists && doc.data()) {
-                jarvisMemory = doc.data();
-                // Ensure arrays exist
-                if (!jarvisMemory.userProfile) jarvisMemory.userProfile = {};
-                if (!jarvisMemory.chatHistory) jarvisMemory.chatHistory = [];
-                if (!jarvisMemory.savedFacts) jarvisMemory.savedFacts = [];
-                
-                addActivity("Cloud memory loaded");
-            } else {
-                await memoryRef.set(jarvisMemory);
-                addActivity("Created cloud database");
-            }
-        } catch (e) {
-            console.error("Firebase sync error:", e);
-            addActivity("Using local offline memory");
-        }
-    } else {
-        addActivity("Offline mode active");
-    }
-}
-
-// Save Memory
-async function saveMemory() {
-    localStorage.setItem("jarvis_memory_v1", JSON.stringify(jarvisMemory));
-    if (memoryRef) {
-        try {
-            await memoryRef.set(jarvisMemory);
-            addActivity("Memory synced to cloud");
-        } catch (e) {
-            console.error("Cloud save failed:", e);
-        }
-    }
-}
-
-// Run memory load
 loadCloudMemory();
 
 /* =====================================================
