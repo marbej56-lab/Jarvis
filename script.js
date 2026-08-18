@@ -326,7 +326,7 @@ function addActivity(message) {
 }
 
 /* =====================================================
-   VOICE SYSTEM & SPEECH RECOGNITION
+   VOICE SYSTEM & SPEECH RECOGNITION (FAST IPAD FIX)
 ===================================================== */
 
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -335,6 +335,7 @@ let microphoneStarted = false;
 let activeSession = false;
 let aiBusy = false;
 let inactivityTimer = null;
+let speechSilenceTimer = null;
 const INACTIVITY_TIME = 45 * 1000;
 
 function getTimeContext() {
@@ -385,34 +386,41 @@ if (SpeechRecognition) {
             return;
         }
 
-        if (interimText) {
-            transcript.textContent = interimText;
-        }
+        const currentSpeech = (finalText || interimText).trim();
 
-        resetInactivityTimer();
+        if (currentSpeech) {
+            transcript.textContent = currentSpeech;
+            resetInactivityTimer();
 
-        if (finalText.trim() && !aiBusy) {
-            handleUserSpeech(finalText.trim());
+            // Clear previous timer on every new word spoken
+            clearTimeout(speechSilenceTimer);
+
+            // Automatically send prompt after 1.2s of silence (Fixes iPad Safari lag)
+            if (!aiBusy && currentSpeech.length > 2) {
+                speechSilenceTimer = setTimeout(() => {
+                    if (!aiBusy && activeSession) {
+                        const cleanPrompt = currentSpeech.replace(/\bjarvis\b/gi, "").trim();
+                        if (cleanPrompt.length > 1) {
+                            try { recognition.stop(); } catch(e){}
+                            handleUserSpeech(cleanPrompt);
+                        }
+                    }
+                }, 1200);
+            }
         }
     };
 
     recognition.onend = function () {
         if (!microphoneStarted) return;
         setTimeout(() => {
-            try {
-                recognition.start();
-            } catch (error) {
-                console.log("Recognition restart:", error);
+            if (!aiBusy) {
+                try { recognition.start(); } catch (error) {}
             }
         }, 300);
     };
 
     recognition.onerror = function (event) {
         console.log("Speech recognition error:", event.error);
-        if (event.error === "not-allowed") {
-            transcript.textContent = "Microphone permission required";
-            addActivity("Microphone permission denied");
-        }
     };
 }
 
