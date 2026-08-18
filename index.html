@@ -107,12 +107,17 @@
     </main>
 
 
-    <!-- HIDDEN MODAL CONTAINER (Prevents script.js null evaluation errors) -->
-    <div id="apiModal" class="modal" style="display: none;">
-        <div class="modal-content">
-            <input type="password" id="groqKeyInput" placeholder="gsk_..." />
+       <!-- VISIBLE API KEY MODAL -->
+    <div id="apiModal" class="modal" style="display: flex; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; align-items: center; justify-content: center;">
+        <div class="modal-content" style="background: #111; padding: 20px; border: 1px solid #00d2ff; text-align: center; border-radius: 8px;">
+            <h3 style="color: #00d2ff; margin-top: 0;">Groq API Key Required</h3>
+            <p style="color: #ccc; font-size: 14px;">Enter your key to enable J.A.R.V.I.S. core:</p>
+            <input type="password" id="groqKeyInput" placeholder="gsk_..." style="padding: 8px; width: 80%; margin-bottom: 15px; border-radius: 4px; border: 1px solid #333;" />
+            <br>
+            <button onclick="saveGroqKey()" style="padding: 8px 16px; background: #00d2ff; border: none; color: #000; font-weight: bold; cursor: pointer; border-radius: 4px;">Save Key</button>
         </div>
     </div>
+
 
 
     <!-- CLOUDFLARE AI CONNECTION -->
