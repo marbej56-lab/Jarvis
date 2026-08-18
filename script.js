@@ -2,18 +2,17 @@
    J.A.R.V.I.S. VOICE AI CORE - CLOUD SYNCED (FIREBASE)
 ===================================================== */
 
-// <!-- Firebase SDKs for Cloud Memory Sync -->
-<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-
+const firebaseConfig = {
+  apiKey: "AIzaSyBp5PCpaeB3hRVeGeF-rmAlkKGYvsOFXWE",
+  authDomain: "jarvis-memory-b4d7a.firebaseapp.com",
+  projectId: "jarvis-memory-b4d7a",
+  storageBucket: "jarvis-memory-b4d7a.firebasestorage.app",
+  messagingSenderId: "210322906311",
+  appId: "1:210322906311:web:1a8c70feeeab21822c72e2"
 };
 
-// Initialize Firebase & Firestore
-if (typeof firebase !== "undefined" && firebase.apps.length === 0) {
-    firebase.initializeApp(firebaseConfig);
-}
-const db = (typeof firebase !== "undefined") ? firebase.firestore() : null;
-const memoryRef = db ? db.collection("jarvis_data").doc("shared_memory") : null;
+let db = null;
+let memoryRef = null;
 
 // Global Memory Object
 let jarvisMemory = {
@@ -22,12 +21,26 @@ let jarvisMemory = {
     savedFacts: []
 };
 
-// Load Memory from Firebase Cloud
+// Safe Firebase Initialization
+try {
+    if (typeof firebase !== "undefined") {
+        if (firebase.apps.length === 0) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        db = firebase.firestore();
+        memoryRef = db.collection("jarvis_data").doc("shared_memory");
+    }
+} catch (e) {
+    console.log("Firebase setup fallback:", e);
+}
+
+// Load Memory from Cloud or Fallback
 async function loadCloudMemory() {
     if (!memoryRef) {
-        // Fallback to local storage if Firebase is not initialized
         const local = localStorage.getItem("jarvis_memory_v1");
-        if (local) jarvisMemory = JSON.parse(local);
+        if (local) {
+            try { jarvisMemory = JSON.parse(local); } catch(e){}
+        }
         return;
     }
     try {
@@ -41,16 +54,13 @@ async function loadCloudMemory() {
         }
     } catch (e) {
         console.error("Error loading cloud memory:", e);
-        addActivity("Cloud sync error, using fallback");
+        addActivity("Cloud sync error, using local fallback");
     }
 }
 
-// Save Memory to Firebase Cloud
+// Save Memory to Cloud
 async function saveMemory() {
-    // Save to local storage as instant backup
     localStorage.setItem("jarvis_memory_v1", JSON.stringify(jarvisMemory));
-    
-    // Sync to Cloud Database
     if (memoryRef) {
         try {
             await memoryRef.set(jarvisMemory);
