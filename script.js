@@ -35,7 +35,6 @@ try {
     console.log("Firebase init skipped:", e);
 }
 
-loadCloudMemory();
 
 /* =====================================================
    CANVAS & GRAPHICS
