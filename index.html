@@ -1,146 +1,266 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>J.A.R.V.I.S. SYSTEM INTERFACE</title>
-    <link rel="stylesheet" href="style.css">
 
-    <!-- Firebase SDKs for Cloud Sync -->
+    <title>J.A.R.V.I.S.</title>
+
+    <!-- Updated CSS filename -->
+    <link rel="stylesheet" href="styles.css">
+
+    <!-- Firebase SDKs for Cloud Memory Sync -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
-    <!-- Eruda Mobile Console Debugger -->
+    <!-- Eruda Console for iPad Debugging -->
     <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
     <script>eruda.init();</script>
 </head>
+
 <body>
 
-    <!-- BACKGROUND GRID & GLOW EFFECT -->
-    <div class="bg-grid"></div>
-    <div class="glow-overlay"></div>
+    <main class="interface">
 
-    <div class="app-container">
+        <!-- LEFT STATUS -->
+        <section class="left-panel">
 
-        <!-- TOP BAR / HEADER -->
-        <header class="top-bar">
-            <div class="brand">
-                <span class="system-id">STARK_IND_SYS_v10.8</span>
-                <h1 class="main-title">J.A.R.V.I.S.</h1>
+            <div class="panel-title">
+                SYSTEM STATUS
             </div>
 
-            <div class="system-status-panel">
-                <div class="status-indicator">
-                    <span class="pulse-dot"></span>
-                    <span id="modeText" class="status-text">PASSIVE</span>
-                </div>
-                <div class="mode-selector">
-                    <span id="passiveMode" class="mode-tag active">STANDBY</span>
-                    <span id="listeningMode" class="mode-tag">LISTENING</span>
-                    <span id="thinkingMode" class="mode-tag">THINKING</span>
-                    <span id="speakingMode" class="mode-tag">SPEAKING</span>
-                </div>
+            <div class="current-status">
+                <span class="status-dot"></span>
+                <span id="modeText">PASSIVE</span>
             </div>
-        </header>
 
-        <!-- MAIN DASHBOARD CONTENT -->
-        <main class="dashboard-content">
+            <div class="mode-list">
 
-            <!-- LEFT HUD PANEL -->
-            <aside class="hud-panel left-panel">
-                <div class="panel-box">
-                    <div class="panel-header">CORE METRICS</div>
-                    <div class="metric-group">
-                        <div class="metric-label">NETWORK SYNC</div>
-                        <div class="progress-bar"><div class="fill" style="width: 98%;"></div></div>
-                    </div>
-                    <div class="metric-group">
-                        <div class="metric-label">NEURAL PROCESSHUB</div>
-                        <div class="progress-bar"><div class="fill" style="width: 85%;"></div></div>
-                    </div>
-                    <div class="metric-group">
-                        <div class="metric-label">GROQ LPU CAPACITY</div>
-                        <div class="progress-bar"><div class="fill" style="width: 100%;"></div></div>
-                    </div>
+                <div id="passiveMode" class="mode active">
+                    PASSIVE
                 </div>
 
-                <div class="panel-box">
-                    <div class="panel-header">HARDWARE TELEMETRY</div>
-                    <ul class="telemetry-list">
-                        <li><span>MICROPHONE:</span> <strong class="online">ACTIVE</strong></li>
-                        <li><span>SPEECH RECOGNITION:</span> <strong class="online">ONLINE</strong></li>
-                        <li><span>CLOUD MEMORY:</span> <strong class="online">FIRESTORE READY</strong></li>
-                        <li><span>TTS SYNTHESIZER:</span> <strong class="online">ENABLED</strong></li>
-                    </ul>
-                </div>
-            </aside>
-
-            <!-- CENTER CORE VISUALIZER -->
-            <section class="center-core">
-                <div class="sphere-container">
-                    <div class="hud-ring outer-ring"></div>
-                    <div class="hud-ring inner-ring"></div>
-                    <canvas id="sphere"></canvas>
+                <div id="listeningMode" class="mode">
+                    LISTENING
                 </div>
 
-                <div class="transcript-box">
-                    <div class="transcript-header">SYSTEM FEED</div>
-                    <p class="transcript" id="transcript">Tap anywhere, allow microphone, then say "Jarvis"</p>
-                </div>
-            </section>
-
-            <!-- RIGHT HUD PANEL -->
-            <aside class="hud-panel right-panel">
-                <div class="panel-box activity-box">
-                    <div class="panel-header">SYSTEM ACTIVITY LOG</div>
-                    <div id="activity" class="activity-log">
-                        <!-- Activity items append here dynamically -->
-                    </div>
+                <div id="thinkingMode" class="mode">
+                    THINKING
                 </div>
 
-                <div class="panel-box">
-                    <div class="panel-header">DIAGNOSTICS</div>
-                    <div class="diagnostic-grid">
-                        <div class="diag-card">
-                            <span class="diag-val">0.02ms</span>
-                            <span class="diag-lbl">LATENCY</span>
-                        </div>
-                        <div class="diag-card">
-                            <span class="diag-val">100%</span>
-                            <span class="diag-lbl">UPTIME</span>
-                        </div>
-                    </div>
+                <div id="speakingMode" class="mode">
+                    SPEAKING
                 </div>
-            </aside>
 
-        </main>
-
-        <!-- FOOTER BAR -->
-        <footer class="bottom-bar">
-            <div class="footer-info">SECURE AI PROTOCOL // SHARED MEMORY MATRIX</div>
-            <div class="footer-actions">
-                <button class="hud-btn" onclick="document.getElementById('apiModal').style.display='flex'">CONFIG API</button>
-                <button class="hud-btn" onclick="location.reload()">REBOOT CORE</button>
             </div>
-        </footer>
 
-    </div>
+            <div class="system-info">
 
-    <!-- API KEY MODAL -->
-    <div id="apiModal" class="modal" style="display: none;">
-        <div class="modal-content">
-            <h3>SYSTEM AUTHENTICATION</h3>
-            <p>Enter Groq LPU API key to establish connection:</p>
-            <input type="password" id="groqKeyInput" placeholder="gsk_..." />
-            <div class="modal-buttons">
-                <button class="hud-btn" onclick="saveGroqKey()">AUTHENTICATE</button>
-                <button class="hud-btn cancel-btn" onclick="document.getElementById('apiModal').style.display='none'">CLOSE</button>
+                <div>
+                    MICROPHONE
+                    <span id="micStatus">ACTIVE</span>
+                </div>
+
+                <div>
+                    CORE
+                    <span>ONLINE</span>
+                </div>
+
+                <div>
+                    AI
+                    <span>ONLINE</span>
+                </div>
+
             </div>
-        </div>
-    </div>
 
-    <!-- MAIN JAVASCRIPT CORE (MUST LOAD AT BOTTOM OF BODY) -->
+        </section>
+
+
+        <!-- CENTER -->
+        <section class="center">
+
+            <canvas id="sphere"></canvas>
+
+            <div class="name">
+                J.A.R.V.I.S.
+            </div>
+
+            <div id="transcript" class="transcript">
+                System ready
+            </div>
+
+        </section>
+
+
+        <!-- RIGHT AI ACTIVITY -->
+        <section class="right-panel">
+
+            <div class="panel-title">
+                AI ACTIVITY
+            </div>
+
+            <div id="activity"></div>
+
+        </section>
+
+    </main>
+
+
+    <!-- CLOUDFLARE AI CONNECTION -->
+    <script>
+
+        async function sendToAI(promptText) {
+
+            const transcript = document.getElementById('transcript');
+            const activity = document.getElementById('activity');
+
+            const modeText = document.getElementById('modeText');
+            const passiveMode = document.getElementById('passiveMode');
+            const thinkingMode = document.getElementById('thinkingMode');
+
+            if (!promptText || !promptText.trim()) return;
+
+            // THINKING MODE
+            if (modeText) modeText.innerText = 'THINKING';
+
+            if (passiveMode)
+                passiveMode.classList.remove('active');
+
+            if (thinkingMode)
+                thinkingMode.classList.add('active');
+
+            if (transcript)
+                transcript.innerText = 'Processing command...';
+
+            // Add command to activity
+            if (activity) {
+
+                const newLog = document.createElement('div');
+
+                newLog.style.marginBottom = '8px';
+
+                newLog.innerText = '> ' + promptText;
+
+                activity.prepend(newLog);
+            }
+
+            try {
+
+                const response = await fetch(
+                    'https://jrv.marcbejjani456.workers.dev/',
+                    {
+                        method: 'POST',
+
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+
+                        body: JSON.stringify({
+                            prompt: promptText
+                        })
+                    }
+                );
+
+                const data = await response.json();
+
+                if (
+                    data.candidates &&
+                    data.candidates[0]?.content?.parts[0]?.text
+                ) {
+
+                    const aiText =
+                        data.candidates[0].content.parts[0].text;
+
+                    if (transcript)
+                        transcript.innerText = aiText;
+
+                    // SPEAK RESPONSE
+                    if ('speechSynthesis' in window) {
+
+                        const speech =
+                            new SpeechSynthesisUtterance(aiText);
+
+                        speech.rate = 1;
+                        speech.pitch = 1;
+
+                        speech.onstart = function () {
+
+                            if (modeText)
+                                modeText.innerText = 'SPEAKING';
+                        };
+
+                        speech.onend = function () {
+
+                            if (modeText)
+                                modeText.innerText = 'PASSIVE';
+
+                            if (thinkingMode)
+                                thinkingMode.classList.remove('active');
+
+                            if (passiveMode)
+                                passiveMode.classList.add('active');
+                        };
+
+                        speechSynthesis.cancel();
+
+                        speechSynthesis.speak(speech);
+
+                    }
+
+                }
+
+                else if (data.error) {
+
+                    if (transcript)
+                        transcript.innerText =
+                            'ERROR: ' +
+                            (data.error.message ||
+                             JSON.stringify(data.error));
+
+                }
+
+                else {
+
+                    if (transcript)
+                        transcript.innerText =
+                            'System received empty response.';
+
+                }
+
+            }
+
+            catch (error) {
+
+                if (transcript)
+                    transcript.innerText =
+                        'Connection error: ' + error.message;
+
+            }
+
+            finally {
+
+                if (!('speechSynthesis' in window)) {
+
+                    if (modeText)
+                        modeText.innerText = 'PASSIVE';
+
+                    if (thinkingMode)
+                        thinkingMode.classList.remove('active');
+
+                    if (passiveMode)
+                        passiveMode.classList.add('active');
+                }
+
+            }
+
+        }
+
+    </script>
+
+    <!-- Main JavaScript file placed at the very bottom -->
     <script src="script.js"></script>
 
 </body>
+
 </html>
