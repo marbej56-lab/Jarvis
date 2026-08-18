@@ -1,14 +1,76 @@
 /* =====================================================
-   J.A.R.V.I.S. VOICE AI CORE - LIVELY ORGANIC CLOUD
+   J.A.R.V.I.S. VOICE AI CORE - CLOUD SYNCED (FIREBASE)
+===================================================== */
+
+// <!-- Firebase SDKs for Cloud Memory Sync -->
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+};
+
+// Initialize Firebase & Firestore
+if (typeof firebase !== "undefined" && firebase.apps.length === 0) {
+    firebase.initializeApp(firebaseConfig);
+}
+const db = (typeof firebase !== "undefined") ? firebase.firestore() : null;
+const memoryRef = db ? db.collection("jarvis_data").doc("shared_memory") : null;
+
+// Global Memory Object
+let jarvisMemory = {
+    userProfile: {},
+    chatHistory: [],
+    savedFacts: []
+};
+
+// Load Memory from Firebase Cloud
+async function loadCloudMemory() {
+    if (!memoryRef) {
+        // Fallback to local storage if Firebase is not initialized
+        const local = localStorage.getItem("jarvis_memory_v1");
+        if (local) jarvisMemory = JSON.parse(local);
+        return;
+    }
+    try {
+        const doc = await memoryRef.get();
+        if (doc.exists) {
+            jarvisMemory = doc.data();
+            addActivity("Cloud memory loaded");
+        } else {
+            await memoryRef.set(jarvisMemory);
+            addActivity("Created cloud memory database");
+        }
+    } catch (e) {
+        console.error("Error loading cloud memory:", e);
+        addActivity("Cloud sync error, using fallback");
+    }
+}
+
+// Save Memory to Firebase Cloud
+async function saveMemory() {
+    // Save to local storage as instant backup
+    localStorage.setItem("jarvis_memory_v1", JSON.stringify(jarvisMemory));
+    
+    // Sync to Cloud Database
+    if (memoryRef) {
+        try {
+            await memoryRef.set(jarvisMemory);
+            addActivity("Memory synced to cloud");
+        } catch (e) {
+            console.error("Error syncing cloud memory:", e);
+        }
+    }
+}
+
+loadCloudMemory();
+
+/* =====================================================
+   CANVAS & GRAPHICS
 ===================================================== */
 
 const canvas = document.getElementById("sphere");
 const ctx = canvas.getContext("2d");
 
-let width;
-let height;
-let centerX;
-let centerY;
+let width, height, centerX, centerY;
 
 function resizeCanvas() {
     const dpr = window.devicePixelRatio || 1;
@@ -30,7 +92,7 @@ window.addEventListener("resize", resizeCanvas);
 resizeCanvas();
 
 /* =====================================================
-   AUDIO ANALYZER FOR SPEECH/TALKING REACTIVITY
+   AUDIO ANALYZER FOR SPEECH REACTIVITY
 ===================================================== */
 
 let audioCtx = null;
@@ -67,7 +129,7 @@ function updateVolume() {
 }
 
 /* =====================================================
-   PARTICLE CLOUD SETUP (ASYMMETRICAL & LIVELY)
+   PARTICLE CLOUD SETUP
 ===================================================== */
 
 const PARTICLE_COUNT = 1400;
@@ -265,21 +327,10 @@ function setMode(mode) {
 }
 
 /* =====================================================
-   PERSISTENT MEMORY & GROQ STORAGE
+   GROQ API KEY MANAGEMENT
 ===================================================== */
 
-const MEMORY_KEY = "jarvis_memory_v1";
 const GROQ_KEY_STORAGE = "jarvis_groq_key";
-
-let jarvisMemory = JSON.parse(localStorage.getItem(MEMORY_KEY)) || {
-    userProfile: {},
-    chatHistory: [],
-    savedFacts: []
-};
-
-function saveMemory() {
-    localStorage.setItem(MEMORY_KEY, JSON.stringify(jarvisMemory));
-}
 
 function saveGroqKey() {
     const input = document.getElementById("groqKeyInput");
@@ -392,10 +443,8 @@ if (SpeechRecognition) {
             transcript.textContent = currentSpeech;
             resetInactivityTimer();
 
-            // Clear previous timer on every new word spoken
             clearTimeout(speechSilenceTimer);
 
-            // Automatically send prompt after 1.2s of silence (Fixes iPad Safari lag)
             if (!aiBusy && currentSpeech.length > 2) {
                 speechSilenceTimer = setTimeout(() => {
                     if (!aiBusy && activeSession) {
@@ -489,7 +538,7 @@ function handleUserSpeech(text) {
 }
 
 /* =====================================================
-   SEND TO GROQ API (LLAMA 3.3 70B)
+   SEND TO GROQ API (LLAMA 3.3 70B WITH MEMORY PARSER)
 ===================================================== */
 
 async function sendToAI(text) {
@@ -516,8 +565,12 @@ Known Facts: ${jarvisMemory.savedFacts.join("; ")}
 
 Instructions:
 - Keep answers concise, direct, and natural for voice output.
-- Remember details shared by the user.
-- Maintain a helpful, slightly witty persona.`;
+- Maintain a helpful, slightly witty persona.
+- MEMORY EXTRACTION: If the user shares a fact about themselves (e.g., name, preferred games, hardware, setup, or location), append a memory tag at the VERY END of your response in this exact format:
+  [MEMORY: key=value]
+  Example: "Nice to meet you! [MEMORY: name=Marc]"
+  Example: "Got it, I'll remember that. [MEMORY: tv_model=TCL 43 QLED]"
+  Only include [MEMORY: ...] if NEW information was explicitly stated by the user.`;
 
     const messages = [
         { role: "system", content: systemPrompt }
@@ -575,11 +628,38 @@ Instructions:
 
 function respond(text) {
     aiBusy = false;
+    
+    // Memory extraction regex
+    const memoryRegex = /\[MEMORY:\s*([^=]+)=([^\]]+)\]/gi;
+    let match;
+    let updatedMemory = false;
+
+    while ((match = memoryRegex.exec(text)) !== null) {
+        const key = match[1].trim();
+        const value = match[2].trim();
+
+        jarvisMemory.userProfile[key] = value;
+        
+        const factString = `${key}: ${value}`;
+        if (!jarvisMemory.savedFacts.includes(factString)) {
+            jarvisMemory.savedFacts.push(factString);
+        }
+
+        updatedMemory = true;
+        addActivity(`Memory saved: ${key} = ${value}`);
+    }
+
+    if (updatedMemory) {
+        saveMemory();
+    }
+
+    const cleanText = text.replace(/\[MEMORY:[^\]]+\]/gi, "").trim();
+
     setMode("SPEAKING");
-    transcript.textContent = text;
+    transcript.textContent = cleanText;
     addActivity("Response generated");
     resetInactivityTimer();
-    speak(text);
+    speak(cleanText);
 }
 
 function speak(text) {
