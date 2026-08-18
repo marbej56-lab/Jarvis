@@ -1,5 +1,5 @@
 /* =====================================================
-   J.A.R.V.I.S. VOICE AI CORE - CLOUD SYNCED (FIREBASE)
+   J.A.R.V.I.S. VOICE AI CORE - CLOUD SYNCED (SAFE LOAD)
 ===================================================== */
 
 const firebaseConfig = {
@@ -23,7 +23,7 @@ let jarvisMemory = {
 
 // Safe Firebase Initialization
 try {
-    if (typeof firebase !== "undefined") {
+    if (typeof firebase !== "undefined" && firebase.apps) {
         if (firebase.apps.length === 0) {
             firebase.initializeApp(firebaseConfig);
         }
@@ -31,34 +31,43 @@ try {
         memoryRef = db.collection("jarvis_data").doc("shared_memory");
     }
 } catch (e) {
-    console.log("Firebase setup fallback:", e);
+    console.log("Firebase init skipped:", e);
 }
 
-// Load Memory from Cloud or Fallback
+// Load Memory Safely (Never crashes app)
 async function loadCloudMemory() {
-    if (!memoryRef) {
-        const local = localStorage.getItem("jarvis_memory_v1");
-        if (local) {
-            try { jarvisMemory = JSON.parse(local); } catch(e){}
-        }
-        return;
+    // 1. Always load local memory as baseline first
+    const local = localStorage.getItem("jarvis_memory_v1");
+    if (local) {
+        try { jarvisMemory = JSON.parse(local); } catch(e){}
     }
-    try {
-        const doc = await memoryRef.get();
-        if (doc.exists) {
-            jarvisMemory = doc.data();
-            addActivity("Cloud memory loaded");
-        } else {
-            await memoryRef.set(jarvisMemory);
-            addActivity("Created cloud memory database");
+
+    // 2. Try fetching from Firebase without crashing
+    if (memoryRef) {
+        try {
+            const doc = await memoryRef.get();
+            if (doc && doc.exists && doc.data()) {
+                jarvisMemory = doc.data();
+                // Ensure arrays exist
+                if (!jarvisMemory.userProfile) jarvisMemory.userProfile = {};
+                if (!jarvisMemory.chatHistory) jarvisMemory.chatHistory = [];
+                if (!jarvisMemory.savedFacts) jarvisMemory.savedFacts = [];
+                
+                addActivity("Cloud memory loaded");
+            } else {
+                await memoryRef.set(jarvisMemory);
+                addActivity("Created cloud database");
+            }
+        } catch (e) {
+            console.error("Firebase sync error:", e);
+            addActivity("Using local offline memory");
         }
-    } catch (e) {
-        console.error("Error loading cloud memory:", e);
-        addActivity("Cloud sync error, using local fallback");
+    } else {
+        addActivity("Offline mode active");
     }
 }
 
-// Save Memory to Cloud
+// Save Memory
 async function saveMemory() {
     localStorage.setItem("jarvis_memory_v1", JSON.stringify(jarvisMemory));
     if (memoryRef) {
@@ -66,11 +75,12 @@ async function saveMemory() {
             await memoryRef.set(jarvisMemory);
             addActivity("Memory synced to cloud");
         } catch (e) {
-            console.error("Error syncing cloud memory:", e);
+            console.error("Cloud save failed:", e);
         }
     }
 }
 
+// Run memory load
 loadCloudMemory();
 
 /* =====================================================
@@ -387,7 +397,7 @@ function addActivity(message) {
 }
 
 /* =====================================================
-   VOICE SYSTEM & SPEECH RECOGNITION (FAST IPAD FIX)
+   VOICE SYSTEM & SPEECH RECOGNITION
 ===================================================== */
 
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -548,7 +558,7 @@ function handleUserSpeech(text) {
 }
 
 /* =====================================================
-   SEND TO GROQ API (LLAMA 3.3 70B WITH MEMORY PARSER)
+   SEND TO GROQ API
 ===================================================== */
 
 async function sendToAI(text) {
@@ -571,7 +581,7 @@ Current Date: ${time.date} (${time.day})
 Current Time: ${time.time}
 
 Stored Memories: ${JSON.stringify(jarvisMemory.userProfile)}
-Known Facts: ${jarvisMemory.savedFacts.join("; ")}
+Known Facts: ${jarvisMemory.savedFacts ? jarvisMemory.savedFacts.join("; ") : ""}
 
 Instructions:
 - Keep answers concise, direct, and natural for voice output.
@@ -579,16 +589,17 @@ Instructions:
 - MEMORY EXTRACTION: If the user shares a fact about themselves (e.g., name, preferred games, hardware, setup, or location), append a memory tag at the VERY END of your response in this exact format:
   [MEMORY: key=value]
   Example: "Nice to meet you! [MEMORY: name=Marc]"
-  Example: "Got it, I'll remember that. [MEMORY: tv_model=TCL 43 QLED]"
   Only include [MEMORY: ...] if NEW information was explicitly stated by the user.`;
 
     const messages = [
         { role: "system", content: systemPrompt }
     ];
 
-    jarvisMemory.chatHistory.slice(-10).forEach(msg => {
-        messages.push({ role: msg.role, content: msg.text });
-    });
+    if (jarvisMemory.chatHistory) {
+        jarvisMemory.chatHistory.slice(-10).forEach(msg => {
+            messages.push({ role: msg.role, content: msg.text });
+        });
+    }
 
     messages.push({ role: "user", content: text });
 
@@ -615,6 +626,7 @@ Instructions:
         const data = await response.json();
         const aiText = data.choices[0].message.content;
 
+        if (!jarvisMemory.chatHistory) jarvisMemory.chatHistory = [];
         jarvisMemory.chatHistory.push({ role: "user", text: text });
         jarvisMemory.chatHistory.push({ role: "assistant", text: aiText });
         
@@ -639,7 +651,6 @@ Instructions:
 function respond(text) {
     aiBusy = false;
     
-    // Memory extraction regex
     const memoryRegex = /\[MEMORY:\s*([^=]+)=([^\]]+)\]/gi;
     let match;
     let updatedMemory = false;
@@ -647,6 +658,9 @@ function respond(text) {
     while ((match = memoryRegex.exec(text)) !== null) {
         const key = match[1].trim();
         const value = match[2].trim();
+
+        if (!jarvisMemory.userProfile) jarvisMemory.userProfile = {};
+        if (!jarvisMemory.savedFacts) jarvisMemory.savedFacts = [];
 
         jarvisMemory.userProfile[key] = value;
         
@@ -712,5 +726,4 @@ addActivity("Groq core ready");
 document.addEventListener("click", function startOnce() {
     startMicrophone();
     checkGroqKey();
-    document.removeEventListener("click", startOnce);
 }, { once: true });
