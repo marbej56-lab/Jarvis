@@ -7,7 +7,7 @@
 
     <title>J.A.R.V.I.S.</title>
 
-    <!-- Updated CSS filename -->
+    <!-- Stylesheet Link -->
     <link rel="stylesheet" href="style.css">
 
     <!-- Firebase SDKs for Cloud Memory Sync -->
@@ -107,6 +107,14 @@
     </main>
 
 
+    <!-- HIDDEN MODAL CONTAINER (Prevents script.js null evaluation errors) -->
+    <div id="apiModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <input type="password" id="groqKeyInput" placeholder="gsk_..." />
+        </div>
+    </div>
+
+
     <!-- CLOUDFLARE AI CONNECTION -->
     <script>
 
@@ -177,6 +185,8 @@
 
                     // SPEAK RESPONSE
                     if ('speechSynthesis' in window) {
+
+                        window.speechSynthesis.resume(); // Safari Audio Unlock
 
                         const speech =
                             new SpeechSynthesisUtterance(aiText);
@@ -258,7 +268,7 @@
 
     </script>
 
-    <!-- Main JavaScript file placed at the very bottom -->
+    <!-- Main JavaScript File (Loaded at bottom of body) -->
     <script src="script.js"></script>
 
 </body>
