@@ -564,7 +564,8 @@ Instructions:
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                model: "llama-3.3-70b-versatile",
+                model: "model: "llama3-70b-8192",
+",
                 messages: messages,
                 temperature: 0.6,
                 max_tokens: 300
